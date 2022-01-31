@@ -1,4 +1,4 @@
-local options = require("graphene.config")("get")
+local options = require("graphene.config").opts
 
 local starting, ending = vim.api.nvim_buf_get_mark(0, "<")[1] - 1, vim.api.nvim_buf_get_mark(0, ">")[1] - 1
 

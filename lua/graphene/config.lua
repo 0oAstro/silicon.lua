@@ -1,10 +1,12 @@
-local options = {
+local config = {}
+
+config.opts = {
 	theme = "github-dark",
 	format = "png",
 	upscale = 2,
 	font = "hack",
 	lineNumber = true,
-	outputFile = "graphene_code",
+	outputFile = string.format("GRAPHENE_%s-%s-%s_%s-%s", os.date("%Y"), os.date("%m"), os.date("%d"), os.date("%H"), os.date("%M")),
 	border = {
 		thickness = 10,
 		radius = 0,
@@ -12,14 +14,9 @@ local options = {
 	},
 }
 
---- user: iterate given options over the default config and loads the colorscheme
---- get: returns the options
---- @param type string
 --- @param opts table
-return function(type, opts)
-    if type == "get" then
-        return options
-    elseif type == "user" then
-        options = vim.tbl_deep_extend("force", options, opts or {})
-    end
+config.setup =  function(opts)
+  config.opts = vim.tbl_deep_extend("force", config.opts, opts or {})
 end
+
+return config
