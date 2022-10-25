@@ -1,7 +1,7 @@
 local config = {}
 
 config.opts = {
-	theme = "github-dark",
+	theme = string.format("github-%s", vim.o.background or "dark"),
 	format = "png",
 	upscale = 2,
 	font = "hack",
@@ -10,7 +10,7 @@ config.opts = {
 	border = {
 		thickness = 10,
 		radius = 0,
-		color = "#ABB8C3",
+		color = "",
 	},
 }
 
