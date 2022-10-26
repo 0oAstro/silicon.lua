@@ -71,7 +71,7 @@ return function(show_buffer, copy_to_board)
           if copy_to_board then
             msg = "Snapped to clipboard"
           else
-            msg = string.format("Snapped saved to %s", opts.output)
+            msg = string.format("Snap saved to %s", opts.output)
           end
           vim.notify(msg, vim.log.levels.INFO, {plugin = "silicon.lua"})
         else
