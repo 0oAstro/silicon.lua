@@ -18,7 +18,7 @@
       in {
         devShell = pkgs.devshell.mkShell {
           name = "themer-dev-shell";
-          packages = with pkgs; [ neovim-nightly stylua selene sumneko-lua-language-server alejandra rnix-lsp luajit ];
+          packages = with pkgs; [ neovim-nightly stylua selene sumneko-lua-language-server alejandra rnix-lsp luajit silicon ];
         };
       });
 }

@@ -1,11 +1,12 @@
-local init = {} 
+local init = {}
 
-init.setup = function (opts)
+init.setup = function(opts)
 	require("graphene.config").setup(opts)
 end
 
-init.visualise = function ()
-  require("graphene.main")
+-- Generates image
+init.visualise = function()
+	require("graphene.request")
 end
 
 return init
