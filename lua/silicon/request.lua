@@ -1,15 +1,18 @@
 local opts = require("silicon.config").opts
 local Job = require("plenary.job")
-local esc = vim.fn.shellescape
 local fmt = string.format
 
 local starting, ending = vim.api.nvim_buf_get_mark(0, "<")[1], vim.api.nvim_buf_get_mark(0, ">")[1]
 
 local textCode = table.concat(vim.api.nvim_buf_get_lines(0, starting, ending, false), "\n")
 
-if textCode ~= nil then
+return function(show_buffer, copy_to_board)
+if show_buffer then
+  textCode = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+end
+
+if #textCode ~= 0 then
 	local args = {
-		"--output", opts.output,
 		"--font", opts.font,
 		"--language", vim.bo.filetype,
 		"--line-offset", opts.lineOffset,
@@ -38,6 +41,16 @@ if textCode ~= nil then
 		table.insert(args, "--background")
     table.insert(args, opts.bgColor)
 	end
+  if show_buffer then
+      table.insert(args, "--highlight-lines")
+      table.insert(args, fmt("%s-%s", starting, ending))
+  end
+  if copy_to_board then
+      table.insert(args, "--to-clipboard")
+  else
+      table.insert(args, "--output")
+      table.insert(args, opts.output)
+  end
 	local job = Job:new({
 		command = "silicon",
     args = args,
@@ -54,4 +67,5 @@ if textCode ~= nil then
   print(vim.inspect(fmt("%s %s", "silicon", table.concat(args, " "))))
 else
 	vim.notify("Please select code in visual mode first.", vim.log.levels.WARN)
+end
 end
