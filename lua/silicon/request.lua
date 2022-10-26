@@ -65,17 +65,23 @@ return function(show_buffer, copy_to_board)
 		local job = Job:new({
 			command = "silicon",
 			args = args,
-			on_exit = function(_, exit_code, signal)
-				print(tostring(exit_code), tostring(signal))
-			end,
-			on_stderr = function(error, data, ...)
-				print(vim.inspect(data))
-			end,
+      on_exit = function(_, code, ...)
+        if code == 0 then
+          local msg = ""
+          if copy_to_board then
+            msg = "Snapped to clipboard"
+          else
+            msg = string.format("Snapped saved to %s", opts.output)
+          end
+          vim.notify(msg, vim.log.levels.INFO, {plugin = "silicon.lua"})
+        else
+          vim.notify("Some error occured while executing silicon", vim.log.levels.ERROR, {plugin = "silicon.lua"})
+        end
+      end,
 			writer = textCode,
 			cwd = vim.fn.getcwd(),
 		})
 		job:start()
-		print(vim.inspect(fmt("%s %s", "silicon", table.concat(args, " "))))
 	else
 		vim.notify("Please select code in visual mode first.", vim.log.levels.WARN)
 	end
