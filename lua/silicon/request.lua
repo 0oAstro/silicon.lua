@@ -54,7 +54,7 @@ return function(show_buffer, copy_to_board)
 		end
 		if show_buffer then
 			table.insert(args, "--highlight-lines")
-			table.insert(args, fmt("%s-%s", starting, ending))
+			table.insert(args, fmt("%s-%s", starting + 1, ending))
 		end
 		if copy_to_board then
 			table.insert(args, "--to-clipboard")
