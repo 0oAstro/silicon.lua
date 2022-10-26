@@ -2,7 +2,7 @@ local opts = require("silicon.config").opts
 local Job = require("plenary.job")
 local fmt = string.format
 
-local starting, ending = vim.api.nvim_buf_get_mark(0, "<")[1], vim.api.nvim_buf_get_mark(0, ">")[1]
+local starting, ending = vim.api.nvim_buf_get_mark(0, "<")[1] - 1, vim.api.nvim_buf_get_mark(0, ">")[1]
 
 local textCode = table.concat(vim.api.nvim_buf_get_lines(0, starting, ending, false), "\n")
 
