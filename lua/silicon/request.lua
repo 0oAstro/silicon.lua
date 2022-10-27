@@ -91,6 +91,9 @@ return function(show_buffer, copy_to_board, debug)
 					end, 0)
 				end
 			end,
+      on_stderr = function(_, data, ...)
+        if debug then print(vim.inspect(data)) end
+      end,
 			writer = textCode,
 			cwd = vim.fn.getcwd(),
 		})
