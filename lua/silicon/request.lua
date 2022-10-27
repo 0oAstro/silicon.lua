@@ -56,12 +56,19 @@ return function(show_buffer, copy_to_board, debug)
 			table.insert(args, "--highlight-lines")
 			table.insert(args, fmt("%s-%s", starting + 1, ending))
 		end
-		if copy_to_board then
+		if copy_to_board and vim.fn.executable("wl-copy") == 0 then
 			table.insert(args, "--to-clipboard")
 		elseif vim.fn.executable("wl-copy") == 1 and copy_to_board then
 			-- Save output to /tmp then copy from there
 			table.insert(args, "--output")
-			opts.output = os.tmpname()
+      opts.output = fmt(
+		"/tmp/SILICON_%s-%s-%s_%s-%s.png",
+		os.date("%Y"),
+		os.date("%m"),
+		os.date("%d"),
+		os.date("%H"),
+		os.date("%M")
+	)
 			table.insert(args, opts.output)
 		else
 			table.insert(args, "--output")
@@ -75,6 +82,11 @@ return function(show_buffer, copy_to_board, debug)
 					local msg = ""
 					if copy_to_board then
 						msg = "Snapped to clipboard"
+						vim.defer_fn(function()
+							if vim.fn.executable("wl-copy") == 1 then
+								vim.api.nvim_exec(fmt("silent !cat %s | wl-copy", opts.output), false)
+							end
+						end, 0)
 					else
 						msg = string.format("Snap saved to %s", opts.output)
 					end
@@ -91,14 +103,16 @@ return function(show_buffer, copy_to_board, debug)
 					end, 0)
 				end
 			end,
-      on_stderr = function(_, data, ...)
-        if debug then print(vim.inspect(data)) end
-      end,
+			on_stderr = function(_, data, ...)
+				if debug then
+					print(vim.inspect(data))
+				end
+			end,
 			writer = textCode,
 			cwd = vim.fn.getcwd(),
 		})
 		job:start()
-  else
-    vim.notify("Please select code snippet in visual mode first!", vim.log.levels.WARN)
+	else
+		vim.notify("Please select code snippet in visual mode first!", vim.log.levels.WARN)
 	end
 end
