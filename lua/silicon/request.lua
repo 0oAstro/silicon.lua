@@ -2,7 +2,7 @@ local opts = require("silicon.config").opts
 local Job = require("plenary.job")
 local fmt = string.format
 
-return function(show_buffer, copy_to_board)
+return function(show_buffer, copy_to_board, debug)
 	local starting, ending = vim.api.nvim_buf_get_mark(0, "<")[1] - 1, vim.api.nvim_buf_get_mark(0, ">")[1]
 
 	local textCode = table.concat(vim.api.nvim_buf_get_lines(0, starting, ending, false), "\n")
@@ -58,6 +58,11 @@ return function(show_buffer, copy_to_board)
 		end
 		if copy_to_board then
 			table.insert(args, "--to-clipboard")
+		elseif vim.fn.executable("wl-copy") == 1 and copy_to_board then
+			-- Save output to /tmp then copy from there
+			table.insert(args, "--output")
+			opts.output = os.tmpname()
+			table.insert(args, opts.output)
 		else
 			table.insert(args, "--output")
 			table.insert(args, opts.output)
@@ -65,24 +70,32 @@ return function(show_buffer, copy_to_board)
 		local job = Job:new({
 			command = "silicon",
 			args = args,
-      on_exit = function(_, code, ...)
-        if code == 0 then
-          local msg = ""
-          if copy_to_board then
-            msg = "Snapped to clipboard"
-          else
-            msg = string.format("Snap saved to %s", opts.output)
-          end
-          vim.notify(msg, vim.log.levels.INFO, {plugin = "silicon.lua"})
-        else
-          vim.notify("Some error occured while executing silicon", vim.log.levels.ERROR, {plugin = "silicon.lua"})
-        end
-      end,
+			on_exit = function(_, code, ...)
+				if code == 0 then
+					local msg = ""
+					if copy_to_board then
+						msg = "Snapped to clipboard"
+					else
+						msg = string.format("Snap saved to %s", opts.output)
+					end
+					vim.defer_fn(function()
+						vim.notify(msg, vim.log.levels.INFO, { plugin = "silicon.lua" })
+					end, 0)
+				else
+					vim.defer_fn(function()
+						vim.notify(
+							"Some error occured while executing silicon",
+							vim.log.levels.ERROR,
+							{ plugin = "silicon.lua" }
+						)
+					end, 0)
+				end
+			end,
 			writer = textCode,
 			cwd = vim.fn.getcwd(),
 		})
 		job:start()
-	else
-		vim.notify("Please select code in visual mode first.", vim.log.levels.WARN)
+  else
+    vim.notify("Please select code snippet in visual mode first!", vim.log.levels.WARN)
 	end
 end
