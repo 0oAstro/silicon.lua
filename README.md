@@ -12,6 +12,7 @@
 ## ⚡️ Requirements
 
 - Neovim >= 0.6.0
+- [silicon](https://github.com/aloxaf/silicon)
 
 ## 📦 Installation
 
@@ -71,4 +72,40 @@ silicon comes with the following defaults:
 	shadowOffsetY = 8,
 
 }
+```
+
+# 🚀 Usage
+
+1. Select code snippet in visual mode.
+
+- Generate images of selected snippet.
+
+```vim
+lua require("silicon").visualise_api({})
+```
+
+- Generate images of whole buffer with the selected snippet being highlighted by lighter background.
+
+```vim
+lua require("silicon").visualise_api({show_buf = true})
+```
+
+- Copy the image of snippet to clipboard. (Only xclip is supported for Linux, Mac and windows are also supported)
+
+```vim
+lua require("silicon").visualise_api({to_clip = true})
+```
+
+**NOTE:** The default path of image is the current working directory of the editor, but you can change it by
+```lua
+require("silicon").setup({
+        output = string.format( 
+                 "/home/astro/Pictures/SILICON_%s-%s-%s_%s-%s.png", 
+                 os.date("%Y"), 
+                 os.date("%m"), 
+                 os.date("%d"), 
+                 os.date("%H"), 
+                 os.date("%M") 
+         ),
+})
 ```
