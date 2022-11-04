@@ -1,15 +1,8 @@
 local config = {}
 
 config.opts = {
-	theme = "Dracula",
-	output = string.format(
-		"SILICON_%s-%s-%s_%s-%s.png",
-		os.date("%Y"),
-		os.date("%m"),
-		os.date("%d"),
-		os.date("%H"),
-		os.date("%M")
-	),
+	theme = "auto",
+	output = "SILICON_${year}-${month}-${date}_${time}.png",
 	bgColor = vim.g.terminal_color_5,
 	bgImage = "", -- path to image, must be png
 	roundCorner = true,
@@ -24,6 +17,7 @@ config.opts = {
 	shadowColor = "#555555",
 	shadowOffsetX = 8,
 	shadowOffsetY = 8,
+	gobble = false,
 }
 
 --- @param opts table

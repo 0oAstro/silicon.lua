@@ -26,9 +26,15 @@ Try using require("silicon").visualise_api({show_buf = %s, to_clip = %s})
 end
 
 -- Similar to visualise
+--- Generates image of selected
+---[[
+-- show_buf boolean whether to show buffer
+-- to_clip boolean whether to show clipboard
+-- debug show debug info
+---]]
 ---@param opts table containing the options
 init.visualise_api = function(opts)
-	require("silicon.request")(opts.show_buf or false, opts.to_clip or false, opts.debug or false)
+	require("silicon.request").exec(opts.show_buf or false, opts.to_clip or false, opts.debug or false)
 end
 
 return init

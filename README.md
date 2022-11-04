@@ -47,15 +47,8 @@ silicon comes with the following defaults:
 
 ```lua
 {
-	theme = "Dracula",
-	output = string.format(
-		"SILICON_%s-%s-%s_%s-%s.png",
-		os.date("%Y"),
-		os.date("%m"),
-		os.date("%d"),
-		os.date("%H"),
-		os.date("%M")
-	), -- auto generate file name based on time (absolute or relative to cwd)
+	theme = "auto",
+	output = "SILICON_${year}-${month}-${date}_${time}.png", -- auto generate file name based on time (absolute or relative to cwd)
 	bgColor = vim.g.terminal_color_5,
 	bgImage = "", -- path to image, must be png
 	roundCorner = true,
@@ -70,7 +63,7 @@ silicon comes with the following defaults:
 	shadowColor = "#555555",
 	shadowOffsetX = 8,
 	shadowOffsetY = 8,
-
+    gobble = false, -- enable lsautogobble like feature
 }
 ```
 
@@ -90,7 +83,7 @@ lua require("silicon").visualise_api({})
 lua require("silicon").visualise_api({show_buf = true})
 ```
 
-- Copy the image of snippet to clipboard. (Only xclip is supported for Linux, Mac and windows are also supported)
+- Copy the image of snippet to clipboard.
 
 ```vim
 lua require("silicon").visualise_api({to_clip = true})
@@ -99,13 +92,6 @@ lua require("silicon").visualise_api({to_clip = true})
 **NOTE:** The default path of image is the current working directory of the editor, but you can change it by
 ```lua
 require("silicon").setup({
-        output = string.format( 
-                 "/home/astro/Pictures/SILICON_%s-%s-%s_%s-%s.png", 
-                 os.date("%Y"), 
-                 os.date("%m"), 
-                 os.date("%d"), 
-                 os.date("%H"), 
-                 os.date("%M") 
-         ),
+        output = "/home/astro/Pictures/SILICON_$year-$month-$date-$time.png"),
 })
 ```

@@ -2,7 +2,7 @@
   description = "Dev Shell For Silicon";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils/master";
     devshell.url = "github:numtide/devshell/master";
     nvim-nightly.url = "github:nix-community/neovim-nightly-overlay";
