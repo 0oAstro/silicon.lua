@@ -185,7 +185,7 @@ request.exec = function(show_buffer, copy_to_board, debug)
 		elseif vim.fn.executable("wl-copy") == 1 and copy_to_board then
 			-- Save output to /tmp then copy from there
 			table.insert(args, "--output")
-			opts.output = utils.replace_placeholders("/tmp/SILICON_${year}-${month}-%{date}_${time}.png")
+			opts.output = utils.replace_placeholders("/tmp/SILICON_${year}-${month}-${date}_${time}.png")
 			table.insert(args, opts.output)
 		else
 			table.insert(args, "--output")
