@@ -18,6 +18,7 @@ config.opts = {
 	shadowOffsetX = 8,
 	shadowOffsetY = 8,
 	gobble = false,
+	debug = false,
 }
 
 --- @param opts table
