@@ -76,7 +76,6 @@ request.exec = function(range, show_buffer, copy_to_board)
 			current_whitespace = string.len(string.match(lines[idx], "^[\r\n\t\f\v ]*") or "")
 			whitespace = current_whitespace < (whitespace or current_whitespace + 1) and current_whitespace
 				or whitespace
-			print(vim.inspect(fmt("CURRENT %s GLOBAL %s", current_whitespace, whitespace)))
 		end
 		-- Now remove whitespace
 		for idx = 1, #lines do
@@ -118,7 +117,7 @@ request.exec = function(range, show_buffer, copy_to_board)
 		if utils.exists(themes_path) ~= true then
 			os.execute(fmt("mkdir -p %s %s", themes_path, syntaxes_path))
 		end
-		if vim.tbl_contains(utils.installed_colorschemes(), fmt("%s.tmTheme", opts.theme)) then
+		if vim.tbl_contains(utils.installed_colorschemes(), fmt("%s.tmTheme", opts.theme)) and then
 			goto skip_build
 		end
 		utils.build_tmTheme()
