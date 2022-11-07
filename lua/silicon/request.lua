@@ -117,7 +117,7 @@ request.exec = function(range, show_buffer, copy_to_board)
 		if utils.exists(themes_path) ~= true then
 			os.execute(fmt("mkdir -p %s %s", themes_path, syntaxes_path))
 		end
-		if vim.tbl_contains(utils.installed_colorschemes(), fmt("%s.tmTheme", opts.theme)) and then
+		if vim.tbl_contains(utils.installed_colorschemes(), fmt("%s.tmTheme", opts.theme)) then
 			goto skip_build
 		end
 		utils.build_tmTheme()
