@@ -56,8 +56,10 @@ utils.replace_placeholders = function(str)
 		:gsub("${date}", os.date("%d"))
 end
 
-request.exec = function(show_buffer, copy_to_board, debug)
-	local starting, ending = vim.api.nvim_buf_get_mark(0, "<")[1] - 1, vim.api.nvim_buf_get_mark(0, ">")[1]
+request.exec = function(range, show_buffer, copy_to_board)
+	table.sort(range)
+	local starting, ending = unpack(range)
+	starting = starting - 1
 
 	local lines = vim.api.nvim_buf_get_lines(0, starting, ending, true)
 
@@ -125,7 +127,7 @@ request.exec = function(show_buffer, copy_to_board, debug)
 			args = { "--build-cache" },
 			cwd = config_dir,
 			on_stderr = function(_, data, ...)
-				if debug then
+				if opts.debug then
 					print(vim.inspect(data))
 				end
 			end,
@@ -221,7 +223,7 @@ request.exec = function(show_buffer, copy_to_board, debug)
 				end
 			end,
 			on_stderr = function(_, data, ...)
-				if debug then
+				if opts.debug then
 					print(vim.inspect(data))
 				end
 			end,

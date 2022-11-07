@@ -63,35 +63,57 @@ silicon comes with the following defaults:
 	shadowColor = "#555555",
 	shadowOffsetX = 8,
 	shadowOffsetY = 8,
-    gobble = false, -- enable lsautogobble like feature
+	gobble = false, -- enable lsautogobble like feature
+	debug = false, -- enable debug output
 }
 ```
 
 # 🚀 Usage
 
-1. Select code snippet in visual mode.
+## Keymaps
 
-- Generate images of selected snippet.
-
-```vim
-lua require("silicon").visualise_api({})
-```
-
-- Generate images of whole buffer with the selected snippet being highlighted by lighter background.
-
-```vim
-lua require("silicon").visualise_api({show_buf = true})
-```
-
-- Copy the image of snippet to clipboard.
-
-```vim
-lua require("silicon").visualise_api({to_clip = true})
-```
-
-**NOTE:** The default path of image is the current working directory of the editor, but you can change it by
 ```lua
-require("silicon").setup({
-        output = "/home/astro/Pictures/SILICON_$year-$month-$date-$time.png"),
-})
+-- Generate image of lines in a visual selection
+vim.keymap.set('v', '<Leader>s',  function() silicon.visualise_api() end )
+-- Generate image of a whole buffer, with lines in a visual selection highlighted
+vim.keymap.set('v', '<Leader>bs', function() silicon.visualise_api({to_clip = true, show_buf = true}) end )
+-- Generate visible portion of a buffer
+vim.keymap.set('n', '<Leader>s',  function() silicon.visualise_api({to_clip = true, visible = true}) end )
+-- Generate current buffer line in normal mode
+vim.keymap.set('n', '<Leader>s',  function() silicon.visualise_api({to_clip = true}) end )
 ```
+
+## Command line
+
+Calling `silicon.visualise_api` with `lua` in command line doesn't work due to `lua` not supporting ranges.  
+This means that the moment you hit enter, you leave visual mode before lua function is called. While this populates two registers, using them doesn't work with "v" mode maps.  
+A workaround has been implemented, and a shorthand that forces it is available as `.visualise_cmdline`:
+
+- Generate image of lines in a visual selection
+
+    ```lua
+    lua require('silicon').visualise_cmdline()
+    ```
+
+- Generate image of a whole buffer, with lines in a visual selection highlighted
+
+    ```lua
+    lua require('silicon').visualise_cmdline({to_clip = true, show_buf = true})
+    ```
+
+- Generate visible portion of a buffer
+
+    ```lua
+    lua require('silicon').visualise_cmdline({to_clip = true, visible = true})
+    ```
+
+
+## Notes
+
+- The default path of image is the current working directory of the editor, but you can change it by
+
+    ```lua
+    require("silicon").setup({
+            output = "/home/astro/Pictures/SILICON_$year-$month-$date-$time.png"),
+    })
+    ```
