@@ -1,60 +1,9 @@
 local opts = require("silicon.config").opts
+local utils = require('silicon.utils')
 local Job = require("plenary.job")
 local fmt = string.format
 
 local request = {}
-
-local utils = {}
-
-utils.os_capture = function(cmd, raw)
-	local f = assert(io.popen(cmd, "r"))
-	local s = assert(f:read("*a"))
-	f:close()
-	if raw then
-		return s
-	end
-	s = string.gsub(s, "^%s+", "")
-	s = string.gsub(s, "%s+$", "")
-	s = string.gsub(s, "[\n\r]+", " ")
-	return s
-end
-
-local config_dir = string.match(utils.os_capture("silicon --config-file"), "^(.*[\\\\/])")
-local themes_path = config_dir .. "/themes"
-local syntaxes_path = config_dir .. "/syntaxes"
-
-utils.installed_colorschemes = function()
-	return vim.fn.readdir(themes_path)
-end
-
---- Check if a file or directory exists in this path
----@param file string path of file or directory
-utils.exists = function(file)
-	local ok, err, code = os.rename(file, file)
-	if not ok then
-		if code == 13 then
-			-- Permission denied, but it exists
-			return true
-		end
-	end
-	return ok, err
-end
-
-utils.build_tmTheme = function()
-	local tmTheme = require("silicon.build_tmTheme")()
-	local file = fmt("%s/%s.tmTheme", themes_path, vim.g.colors_name)
-	os.execute(fmt("touch %s", file))
-	local theme = io.open(file, "w+")
-	theme:write(tmTheme)
-	theme:close()
-end
-
-utils.replace_placeholders = function(str)
-	return str:gsub("${time}", fmt("%s:%s", os.date("%H"), os.date("%M")))
-		:gsub("${year}", os.date("%Y"))
-		:gsub("${month}", os.date("%m"))
-		:gsub("${date}", os.date("%d"))
-end
 
 request.exec = function(range, show_buffer, copy_to_board)
 	table.sort(range)
@@ -109,33 +58,24 @@ request.exec = function(range, show_buffer, copy_to_board)
 "base16-256"}
 
 	if string.lower(opts.theme) == "auto" or not(vim.tbl_contains(default_themes, opts.theme)) then
-		if utils.os_capture("silicon --version") ~= "silicon 0.5.1" then
+		if utils._os_capture("silicon --version") ~= "silicon 0.5.1" then
 			vim.notify("silicon v0.5.1 is required for automagically creating theme", vim.log.levels.ERROR)
 			return
 		end
 		opts.theme = vim.g.colors_name
-		if utils.exists(themes_path) ~= true then
-			os.execute(fmt("mkdir -p %s %s", themes_path, syntaxes_path))
+		if utils._exists(utils.themes_path) ~= true then
+			os.execute(fmt("mkdir -p %s %s", utils.themes_path, utils.syntaxes_path))
 		end
-		if vim.tbl_contains(utils.installed_colorschemes(), fmt("%s.tmTheme", opts.theme)) then
+		if vim.tbl_contains(utils._installed_colorschemes(), fmt("%s.tmTheme", opts.theme)) then
 			goto skip_build
 		end
 		utils.build_tmTheme()
-		Job:new({
-			command = "silicon",
-			args = { "--build-cache" },
-			cwd = config_dir,
-			on_stderr = function(_, data, ...)
-				if opts.debug then
-					print(vim.inspect(data))
-				end
-			end,
-		}):sync()
+		utils.reload_silicon_cache()
 	end
 
 	::skip_build::
 
-	opts.output = utils.replace_placeholders(opts.output)
+	opts.output = utils._replace_placeholders(opts.output)
 	if #textCode ~= 0 then
 		local args = {
 			"--font",
@@ -186,7 +126,7 @@ request.exec = function(range, show_buffer, copy_to_board)
 		elseif vim.fn.executable("wl-copy") == 1 and copy_to_board then
 			-- Save output to /tmp then copy from there
 			table.insert(args, "--output")
-			opts.output = utils.replace_placeholders("/tmp/SILICON_${year}-${month}-${date}_${time}.png")
+			opts.output = utils._replace_placeholders("/tmp/SILICON_${year}-${month}-${date}_${time}.png")
 			table.insert(args, opts.output)
 		else
 			table.insert(args, "--output")
