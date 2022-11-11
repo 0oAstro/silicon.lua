@@ -14,7 +14,7 @@ local hl = function(hl_name, value)
 	if not hl[value] then
 		hl[value] = vim.api.nvim_get_hl_by_name("Normal", true)[value]
 	end
-	local color = string.format("#%x", hl[value])
+	local color = string.format("#%06x", hl[value])
 	return color
 end
 
