@@ -70,7 +70,7 @@ request.exec = function(range, show_buffer, copy_to_board)
 			goto skip_build
 		end
 		utils.build_tmTheme()
-		utils.reload_silicon_cache()
+		utils.reload_silicon_cache({async = false})
 	end
 
 	::skip_build::
