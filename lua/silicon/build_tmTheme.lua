@@ -92,7 +92,7 @@ return function()
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>]] .. hl("@constan", "fg") .. [[</string>
+				<string>]] .. hl("@constant", "fg") .. [[</string>
 			</dict>
 		</dict>
 		<dict>
