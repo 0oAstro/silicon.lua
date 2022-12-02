@@ -62,7 +62,7 @@ request.exec = function(range, show_buffer, copy_to_board)
 			vim.notify("silicon v0.5.1 is required for automagically creating theme", vim.log.levels.ERROR)
 			return
 		end
-		opts.theme = vim.g.colors_name
+		opts.theme = vim.g.colors_name .. "_" .. vim.o.background
 		if utils._exists(utils.themes_path) ~= true then
 			os.execute(fmt("mkdir -p %s %s", utils.themes_path, utils.syntaxes_path))
 		end

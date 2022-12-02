@@ -65,7 +65,7 @@ end
 --- Build silicon theme file from current colorscheme
 utils.build_tmTheme = function()
 	local tmTheme = require("silicon.build_tmTheme")()
-	local file = fmt("%s/%s.tmTheme", utils.themes_path, vim.g.colors_name)
+	local file = fmt("%s/%s.tmTheme", utils.themes_path, config_opts.theme)
 	os.execute(fmt("touch %s", file))
 	local theme = io.open(file, "w+")
 	theme:write(tmTheme)
