@@ -9,10 +9,12 @@ local hl = function(hl_name, value)
 	if value == "bg" then
 		value = "background"
 	end
+        -- Default to foreground if no value is given
 	value = value or "foreground"
 	local hl = vim.api.nvim_get_hl_by_name(hl_name, true)
+        -- If highlight doesn't exist, default to the value for "Normal"
 	if not hl[value] then
-		hl[value] = vim.api.nvim_get_hl_by_name("Normal", true)[value]
+		hl[value] = vim.api.nvim_get_hl_by_name("Normal", true)[value] or vim.api.nvim_get_hl_by_name("Cursorline", true)[value]
 	end
 	local color = string.format("#%06x", hl[value])
 	return color
