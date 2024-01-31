@@ -129,6 +129,7 @@ request.exec = function(range, show_buffer, copy_to_board)
         table.insert(args, "--output")
         opts.output = utils._replace_placeholders("/tmp/SILICON_${year}-${month}-${date}_${time}.png")
         table.insert(args, opts.output)
+      end
 		else
 			table.insert(args, "--output")
 			table.insert(args, opts.output)
