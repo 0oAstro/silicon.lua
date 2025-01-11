@@ -57,11 +57,26 @@ request.exec = function(range, show_buffer, copy_to_board)
 "base16",
 "base16-256"}
 
+  local function compareVersion(current, required)
+    local currentVersion = {string.match(current, "(%d+)%.(%d+)%.(%d+)")}
+    local requiredVersion = {string.match(required, "(%d+)%.(%d+)%.(%d+)")}
+
+    for i = 1, 3 do
+      if tonumber(currentVersion[i]) < tonumber(requiredVersion[i]) then
+        return false
+      end
+    end
+    return true
+  end
+
 	if string.lower(opts.theme) == "auto" or not(vim.tbl_contains(default_themes, opts.theme)) then
-		if utils._os_capture("silicon --version") ~= "silicon 0.5.1" then
-			vim.notify("silicon v0.5.1 is required for automagically creating theme", vim.log.levels.ERROR)
-			return
-		end
+    local sys_silicon_version = utils._os_capture("silicon --version")
+
+
+    if compareVersion(sys_silicon_version, '0.5.1') then
+      vim.notify("silicon v0.5.1 or higher is required for auto theme detection", vim.log.levels.ERROR)
+      return
+    end
 		opts.theme = vim.g.colors_name .. "_" .. vim.o.background
 		if utils._exists(utils.themes_path) ~= true then
 			os.execute(fmt("mkdir -p %s %s", utils.themes_path, utils.syntaxes_path))
@@ -132,10 +147,11 @@ request.exec = function(range, show_buffer, copy_to_board)
 			table.insert(args, "--output")
 			table.insert(args, opts.output)
 		end
+
 		local job = Job:new({
 			command = "silicon",
 			args = args,
-			on_exit = function(_, code, ...)
+			on_exit = function(j, code)
 				if code == 0 then
 					local msg = ""
 					if copy_to_board then
@@ -154,7 +170,7 @@ request.exec = function(range, show_buffer, copy_to_board)
 				else
 					vim.defer_fn(function()
 						vim.notify(
-							"Some error occured while executing silicon",
+							"Some error occured while executing silicon" .. j:stderr_result()[1],
 							vim.log.levels.ERROR,
 							{ plugin = "silicon.lua" }
 						)
