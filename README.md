@@ -74,7 +74,7 @@ silicon comes with the following defaults:
 
 ```lua
 -- Generate image of lines in a visual selection
-vim.keymap.set('v', '<Leader>s',  function() silicon.visualise_api() end )
+vim.keymap.set('v', '<Leader>s',  function() silicon.visualise_api({}) end )
 -- Generate image of a whole buffer, with lines in a visual selection highlighted
 vim.keymap.set('v', '<Leader>bs', function() silicon.visualise_api({to_clip = true, show_buf = true}) end )
 -- Generate visible portion of a buffer
@@ -92,7 +92,7 @@ A workaround has been implemented, and a shorthand that forces it is available a
 - Generate image of lines in a visual selection
 
     ```lua
-    lua require('silicon').visualise_cmdline()
+    lua require('silicon').visualise_cmdline({})
     ```
 
 - Generate image of a whole buffer, with lines in a visual selection highlighted
