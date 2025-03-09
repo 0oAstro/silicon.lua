@@ -13,6 +13,7 @@
 
 - Neovim >= 0.6.0
 - [silicon](https://github.com/aloxaf/silicon)
+- [wl-clipboard](https://github.com/bugaevc/wl-clipboard) (on wayland)
 
 ## 📦 Installation
 

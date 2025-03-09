@@ -121,13 +121,15 @@ request.exec = function(range, show_buffer, copy_to_board)
 			table.insert(args, "--highlight-lines")
 			table.insert(args, fmt("%s-%s", starting + 1, ending))
 		end
-		if copy_to_board and vim.fn.executable("wl-copy") == 0 then
-			table.insert(args, "--to-clipboard")
-		elseif vim.fn.executable("wl-copy") == 1 and copy_to_board then
+		if copy_to_board then
+      if os.getenv("XDG_SESSION_TYPE") == "x11" then
+        table.insert(args, "--to-clipboard")
+      elseif vim.fn.executable("wl-copy") == 1 then
 			-- Save output to /tmp then copy from there
-			table.insert(args, "--output")
-			opts.output = utils._replace_placeholders("/tmp/SILICON_${year}-${month}-${date}_${time}.png")
-			table.insert(args, opts.output)
+        table.insert(args, "--output")
+        opts.output = utils._replace_placeholders("/tmp/SILICON_${year}-${month}-${date}_${time}.png")
+        table.insert(args, opts.output)
+      end
 		else
 			table.insert(args, "--output")
 			table.insert(args, opts.output)
